@@ -54,7 +54,7 @@ If you were to play with this example, you would see that you could change the `
 
 The graph below shows the input size growing (x axis) while the time complexity staying at 1 all the time.
 
-<!-- <BigO timeComplexitiesShown={['bigONotation1']} /> -->
+<canvas id="constantTime"></canvas>
 
 ### O(n) - Linear Time
 
@@ -82,7 +82,7 @@ Sure, if, by chance, the function is called with an `array` with a million eleme
 
 The following graph represents the Big O notation for "O(n) - Linear Time" algorithms. You can see on this graph that, if the input size is `4`, `4` will be the time complexity; if the size is `7`, the time complexity will also be `7`; and so on.
 
-<!-- <BigO timeComplexitiesShown={['bigONotation1', 'bigONotationN']} /> -->
+<canvas id="linearTime"></canvas>
 
 ### O(log n) - Logarithmic Time
 
@@ -124,7 +124,7 @@ So, for an `array` (an input) that is sorted, binary search will probably be way
 
 The graph below shows how O(log n) logarithmic time algorithms behave when their input grows:
 
-<!-- <BigO timeComplexitiesShown={['bigONotation1', 'bigONotationLogN', 'bigONotationN']} /> -->
+<canvas id="logarithmicTime"></canvas>
 
 ### O(n log n) - Linearithmic Time
 
@@ -159,3 +159,134 @@ Recap of the importance of understanding Big O notation for any software enginee
 ## References and Further Reading
 
 Provide references to any materials or textbooks you quoted or took inspiration from. This might also include suggestions for readers who want to delve deeper.
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+var ctx = document.getElementById('logarithmicTime').getContext('2d');
+var logarithmicTime = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], // Array sizes
+    datasets: [{
+      label: 'Max Steps in Binary Search',
+      data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // Log base 2 steps for each size
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: false
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        type: 'logarithmic',
+        position: 'left',
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Number of Steps (log scale)'
+        },
+        ticks: {
+          callback: function(value, index, values) {
+            if (value === 10 || value === 100 || value === 1000) {
+              return '10^' + Math.log10(value).toFixed(0);
+            }
+            return null;
+          }
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Array Size (n)'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    }
+  }
+});
+
+var ctx = document.getElementById('linearTime').getContext('2d');
+var linearTime = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // Array sizes
+        datasets: [{
+            label: 'Steps in Linear Search',
+            data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // Steps increase linearly with array size
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Steps'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Array Size (n)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        }
+    }
+});
+
+var ctx = document.getElementById('constantTime').getContext('2d');
+var constantTime = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // Array sizes
+        datasets: [{
+            label: 'Constant Time Complexity',
+            data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // Constant steps regardless of array size
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: false,
+                title: {
+                    display: true,
+                    text: 'Number of Operations'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Array Size (n)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        }
+    }
+});
+</script>
