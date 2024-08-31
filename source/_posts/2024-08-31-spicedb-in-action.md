@@ -1,6 +1,6 @@
 ---
 title: "SpiceDB in Action"
-excerpt: "SpiceDB is a database focused on authorization and access control, designed to implement fine-grained authorization (FGA) at scale. In this article, "SpiceDB in Action," you will learn how to user SpiceDB by building a simple full-stack application that leverages its powerful access control capabilities."
+excerpt: "SpiceDB is a database focused on authorization and access control, designed to implement fine-grained authorization (FGA) at scale. In this article, 'SpiceDB in Action', you will learn how to user SpiceDB by building a simple full-stack application that leverages its powerful access control capabilities."
 date: "2024-08-31T14:01:26.079Z"
 author: Bruno Krebs
 tags: ["SpiceDB", "Authorization", "Fine-Grained Authorization", "Access Control"]
