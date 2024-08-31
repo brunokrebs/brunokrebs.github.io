@@ -104,7 +104,7 @@ definition task {
   relation editor: user
   relation viewer: user
 
-  permission view = viewer + owner
+  permission view = viewer + editor + owner
   permission edit = editor + owner
   permission delete = owner
 }
@@ -143,3 +143,48 @@ Relationships define how objects are connected within SpiceDB. They establish li
 Permissions in SpiceDB are rules that define what actions can be performed on objects based on the relationships. Permissions are typically defined by combining relationships, allowing for flexible and powerful access control policies.
 
 - Example in Schema: In the task manager schema, the `view`, `edit`, and `delete` permissions are defined. The `view` permission is granted to users who are either `owners` or `viewers` of a `task`, while the `edit` permission is granted to `owners` or `editors`. The `delete` permission is reserved solely for the `owner`.
+
+## Creating Relationship Instances
+
+With the schema in place, the next step is to create specific relationship instances. These instances define which users can interact with which tasks, and in what capacity. By creating these relationships, you enforce the access control rules defined in the schema. When developing the application, you will create a few more relationship instances, but for the moment those should get you going.
+
+Using the `zed` CLI, you can create relationships between users and tasks as follows:
+
+```bash
+# task-001 is owned by user-001
+zed relationship create task:task-001 owner user:user-001
+
+# task-001 is editable by user-002
+zed relationship create task:task-001 editor user:user-002
+
+# task-001 is viewable by user-003
+zed relationship create task:task-001 viewer user:user-003
+
+# task-002 is owned by user-002
+zed relationship create task:task-002 owner user:user-002
+```
+
+The above, creates the following relationship instances:
+
+- `task-001` is owned by `user-001`, editable by `user-002`, and viewable by `user-003`.
+- `task-002` is owned by `user-002`.
+
+Apart from the explicit relationships defined above, the schema also implicitly grants permissions based on the relationships. For example, `user-001` can view, edit, and delete `task-001` because they are the owner. Similarly, `user-002` can view and edit `task-001` because they are an editor, and `user-003` can view `task-001` because they are a viewer.
+
+To make sure those permissions are properly set, you can check them using the following commands:
+
+```bash
+# check if user-001 can view task-002 (should return false)
+zed permission check task:task-002 view user:user-001
+
+# check if user-002 can view task-002 (should return true)
+zed permission check task:task-002 view user:user-002
+
+# check if user-002 can view task-001 (should return true)
+zed permission check task:task-001 view user:user-002
+
+# check if user-001 can view task-001 (should return true)
+zed permission check task:task-001 view user:user-001
+```
+
+The commands above validate the permissions set in the schema. For instance, `user-002` can view `task-001` because they are an editor, while `user-001` cannot view `task-002` because they are not the owner.
