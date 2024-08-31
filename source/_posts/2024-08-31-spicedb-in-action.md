@@ -45,3 +45,39 @@ docker run --rm -p 50051:50051 authzed/spicedb:v1.35.3 serve --grpc-preshared-ke
 ```
 
 This command starts SpiceDB and makes it accessible on port `50051`. The `--grpc-preshared-key` flag is used to set a simple pre-shared key for gRPC communication. For the purposes of this tutorial, a fixed key is used for simplicity. In production, this key would typically be managed more securely.
+
+### Validating the Setup
+
+Now that SpiceDB is running locally, you can validate the setup by using the SpiceDB CLI to interact with the server. First, set up a context for the local server:
+
+```bash
+zed context set localz localhost:50051 "somerandomkeyhere" --insecure
+```
+
+> Note: Contexts in SpiceDB are used to manage connections to different servers. In this case, a context named `local` (an arbitrary name) is being set up to point to the local server running on `localhost:50051`.
+
+After creating the context, list the available contexts to ensure that the local context is set correctly:
+
+```bash
+zed context list
+```
+
+The command above should output something similar to the following:
+
+```text
+CURRENT	NAME 	ENDPOINT       	TOKEN     	TLS CERT
+   ✓   	local	localhost:50051	<redacted>	insecure
+```
+
+Next, run a simple command to ensure that the server is responding correctly:
+
+```bash
+zed version
+```
+
+This command will return the version of the CLI along with the version of the SpiceDB server you are running, confirming that the setup is correct:
+
+```text
+client: zed v0.21.0
+service: v1.35.3
+```
