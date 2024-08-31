@@ -23,3 +23,25 @@ In the context of SpiceDB, FGA is central to its design. SpiceDB allows you to d
 FGA is particularly powerful when dealing with dynamic or hierarchical permissions. For example, in a multi-tenant application, you might need to define permissions that vary not only by user but also by the organization they belong to, the specific project they're working on, or even the status of the data they’re accessing. SpiceDB's support for FGA allows you to model these complex scenarios with ease.
 
 By adopting FGA, you gain the flexibility to enforce security policies that match the specific needs of your application, ensuring that users have the right level of access to the right resources at the right time.
+
+## Pre-requisites
+
+To be able to follow along with this tutorial, you'll need to have the following installed on your machine:
+
+- [Docker](https://www.docker.com/)
+- [Node.js](https://nodejs.org/)
+- [SpiceDB CLI](https://github.com/authzed/zed)
+
+Make sure you have these tools installed before proceeding.
+
+## Setting Up SpiceDB Locally
+
+To begin using SpiceDB, the first step is to run it locally using Docker. To ensure consistency and avoid potential issues with future versions, the Docker image will be pinned to a specific version, `v1.35.3`. This approach ensures that the instructions provided remain relevant even if new versions of SpiceDB are released.
+
+The following command will start a SpiceDB instance:
+
+```bash
+docker run --rm -p 50051:50051 authzed/spicedb:v1.35.3 serve --grpc-preshared-key "some-random-key-here"
+```
+
+This command starts SpiceDB and makes it accessible on port `50051`. The `--grpc-preshared-key` flag is used to set a simple pre-shared key for gRPC communication. For the purposes of this tutorial, a fixed key is used for simplicity. In production, this key would typically be managed more securely.
