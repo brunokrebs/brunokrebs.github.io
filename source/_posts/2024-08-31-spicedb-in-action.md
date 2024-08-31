@@ -81,3 +81,65 @@ This command will return the version of the CLI along with the version of the Sp
 client: zed v0.21.0
 service: v1.35.3
 ```
+
+## Creating the First SpiceDB Schema
+
+With SpiceDB set up and running locally, the next step is to create an initial schema that will represent the foundation of the permissions system. In this section, you will define a basic schema, focusing on the core concepts of objects, relationships, and permissions.
+
+### Schema Overview
+
+The schema you’ll create represents the core components of a task management application. In this application, users will be allowed to create, view, edit, and also delete their own tasks. To manage these interactions, you will define two main object types: `user` and `task`. The `user` object represents the users of the system, while the `task` object represents the tasks that users can interact with. Additionally, the schema will define three types of permissions: `view`, `edit`, and `delete`.
+
+> **Note**: you won't map the `create` permission just yet because there is a slight difference in how it is handled in SpiceDB compared to the other permissions. You will revisit this later in the tutorial.
+
+### Schema Definition
+
+Here’s the SpiceDB schema that defines the `user` and `task` objects, along with the relationships and permissions:
+
+```text
+definition user {}
+
+definition task {
+  relation owner: user
+  relation editor: user
+  relation viewer: user
+
+  permission view = viewer + owner
+  permission edit = editor + owner
+  permission delete = owner
+}
+```
+
+Save the contents of the snippet above in a local file named `task-manager-schema.zed`. After that, run the following command to add it to SliceDB:
+
+```bash
+zed schema write task-manager-schema.zed
+```
+
+To make sure the schema was successfully written, you can read the schema back using the following command:
+
+```bash
+zed schema read
+```
+
+### SpiceDB Concept Definitions
+
+In SpiceDB, authorization is modeled using three core concepts: objects, relationships, and permissions. These concepts work together to define who can do what within your application.
+
+#### Objects
+
+Objects are the fundamental entities within SpiceDB. They represent the resources or entities in your system that need to be protected. An object can be anything from a user, a document, or, in this case, a task.
+
+- Example in Schema: In the task manager schema, the `user` and `task` objects are defined. The `user` object represents the users of the system, while the `task` object represents the tasks that users can interact with.
+
+#### Relationships
+
+Relationships define how objects are connected within SpiceDB. They establish links between objects and are used to determine access rights. A relationship typically connects an object to a user or another object, indicating a specific type of association, such as ownership or membership.
+
+- Example in Schema: In the task manager schema, relationships like `owner`, `editor`, and `viewer` are defined within the `task` object. The `owner` relationship, for instance, links a `task` to a `user`, indicating that the `user` owns the `task` and, therefore, has permissions over it.
+
+#### Permissions
+
+Permissions in SpiceDB are rules that define what actions can be performed on objects based on the relationships. Permissions are typically defined by combining relationships, allowing for flexible and powerful access control policies.
+
+- Example in Schema: In the task manager schema, the `view`, `edit`, and `delete` permissions are defined. The `view` permission is granted to users who are either `owners` or `viewers` of a `task`, while the `edit` permission is granted to `owners` or `editors`. The `delete` permission is reserved solely for the `owner`.
