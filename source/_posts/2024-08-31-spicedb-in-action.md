@@ -51,7 +51,7 @@ This command starts SpiceDB and makes it accessible on port `50051`. The `--grpc
 Now that SpiceDB is running locally, you can validate the setup by using the SpiceDB CLI to interact with the server. First, set up a context for the local server:
 
 ```bash
-zed context set localz localhost:50051 "somerandomkeyhere" --insecure
+zed context set local localhost:50051 "some-random-key-here" --insecure
 ```
 
 > Note: Contexts in SpiceDB are used to manage connections to different servers. In this case, a context named `local` (an arbitrary name) is being set up to point to the local server running on `localhost:50051`.
@@ -188,3 +188,105 @@ zed permission check task:task-001 view user:user-001
 ```
 
 The commands above validate the permissions set in the schema. For instance, `user-002` can view `task-001` because they are an editor, while `user-001` cannot view `task-002` because they are not the owner.
+
+## Integrating SpiceDB with a Node.js
+
+Now that you have SpiceDB up and running and have played a bit with the schema and some relationships, it is time to learn how to integrate it with Node.js. In this section, you will create a simple Node.js script that talks to SpiceDB and checks permissions. The focus will be on the core interaction between the Node.js and SpiceDB, rather than building a full-blown API.
+
+First, create a new directory for the project and navigate into it:
+
+```bash
+mkdir spicedb-nodejs-demo
+cd spicedb-nodejs-demo
+```
+
+Then, initialize a new NPM project:
+
+```bash
+npm init -y
+```
+
+Now, open the directory in your preferred IDE/editor and load the `package.json` file. On that file, add `"type": "module"` to it. This tells Node.js that the project is using ECMAScript modules.
+
+```json
+{
+  //...
+  "type": "module",
+  //...
+}
+```
+
+After creating the new project and configuring it to behave as an ECMAScript module, you can use your terminal to install the `@authzed/authzed-node` package, which provides the client library for interacting with SpiceDB:
+
+```bash
+npm install @authzed/authzed-node
+```
+
+With that in place, create a `src` directory in your NPM project and an `index.js` file inside it:
+
+```bash
+mkdir src
+touch src/index.js
+```
+
+Then, open the `src/index.js` file and add the following code:
+
+```javascript
+import { v1 } from '@authzed/authzed-node';
+
+const client = v1.NewClient('some-random-key-here', 'localhost:50051', v1.ClientSecurity.INSECURE_LOCALHOST_ALLOWED);
+
+try {
+  const response = await new Promise((resolve, reject) => {
+    client.checkPermission({
+      resource: {
+        objectType: 'task',
+        objectId: 'task-001',
+      },
+      permission: 'view',
+      subject: {
+        object: {
+          objectType: 'user',
+          objectId: 'user-001',
+        },
+      },
+    }, (err, response) => {
+      if (err) reject(err);
+      else resolve(response);
+    });
+  });
+
+  switch (response.permissionship)  {
+    case v1.CheckPermissionResponse_Permissionship.NO_PERMISSION:
+      console.log('No permission... go away');
+      break;
+    case v1.CheckPermissionResponse_Permissionship.HAS_PERMISSION:
+      console.log('You do have permission. Go ahead!');
+      break;
+    case v1.CheckPermissionResponse_Permissionship.UNSPECIFIED:
+      console.log('Unknown permissionship!? What are you doing here?');
+      break;
+  }
+} catch (error) {
+  console.error('Oh, damn, error checking permission:', error);
+}
+```
+
+Here's a breakdown of what this code does:
+
+1. It imports the SpiceDB client library.
+2. It creates a new client, connecting to the local SpiceDB server. You should replace `some-random-key-here` in case you used a different key when starting the server.
+3. It uses the `checkPermission` method to ask SpiceDB if `user-001` has permission to `view` the `task-001`.
+4. The callback-based `checkPermission` method is wrapped in a Promise. This allows the use of `async`/`await` syntax, which is more convenient to work with.
+5. It then checks the `permissionship` in the response. This indicates whether the user has permission or not.
+6. Finally, it logs a message based on the result. If something goes wrong, it catches the error and logs it.
+
+To run this script, you can use the following command:
+
+```bash
+node src/index.js
+```
+
+If everything is set up correctly, you should see a message indicating whether `user-001` has permission to view `task-001`. If the permission is granted, the message should say "You do have permission. Go ahead!".
+
+It's worth noting that this is just the beginning of what can be done with SpiceDB. On the next sections, you will extend this example to include more complex interactions and explore additional features of SpiceDB. You also transform this script into an HTTP API that can be used to check permissions from a web application.
