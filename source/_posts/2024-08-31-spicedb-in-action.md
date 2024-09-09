@@ -193,6 +193,8 @@ The commands above validate the permissions set in the schema. For instance, `us
 
 Now that you have SpiceDB up and running and have played a bit with the schema and some relationships, it is time to learn how to integrate it with Node.js. In this section, you will create a simple Node.js script that talks to SpiceDB and checks permissions. The focus will be on the core interaction between the Node.js and SpiceDB, rather than building a full-blown API.
 
+### The NPM project
+
 First, create a new directory for the project and navigate into it:
 
 ```bash
@@ -222,14 +224,16 @@ After creating the new project and configuring it to behave as an ECMAScript mod
 npm install @authzed/authzed-node
 ```
 
-With that in place, create a `src` directory in your NPM project and an `index.js` file inside it:
+### Script for Checking Permissions
+
+With that in place, create a `src` directory in your NPM project and an `check-permission.js` file inside it:
 
 ```bash
 mkdir src
-touch src/index.js
+touch src/check-permission.js
 ```
 
-Then, open the `src/index.js` file and add the following code:
+Then, open the `src/check-permission.js` file and add the following code:
 
 ```javascript
 import { v1 } from '@authzed/authzed-node';
@@ -284,9 +288,95 @@ Here's a breakdown of what this code does:
 To run this script, you can use the following command:
 
 ```bash
-node src/index.js
+node src/check-permission.js
 ```
 
 If everything is set up correctly, you should see a message indicating whether `user-001` has permission to view `task-001`. If the permission is granted, the message should say "You do have permission. Go ahead!".
 
-It's worth noting that this is just the beginning of what can be done with SpiceDB. On the next sections, you will extend this example to include more complex interactions and explore additional features of SpiceDB. You also transform this script into an HTTP API that can be used to check permissions from a web application.
+### Script For Bulk Checking Permissions
+
+Another important feature of SpiceDB is the ability to check permissions in bulk. This is useful when you need to check permissions for multiple users or resources at once without making individual requests for each one. In this section, you will see how to use the bulk permission check feature in SpiceDB.
+
+To do that, create a new file named `bulk-check-permissions.js` inside the `src` directory and add the following code:
+
+```javascript
+import { v1 } from '@authzed/authzed-node';
+
+const client = v1.NewClient('some-random-key-here', 'localhost:50051', v1.ClientSecurity.INSECURE_LOCALHOST_ALLOWED);
+
+try {
+  const response = await new Promise((resolve, reject) => {
+    client.checkBulkPermissions({
+      items: [
+        {
+          resource: {
+            objectType: 'task',
+            objectId: 'task-001',
+          },
+          permission: 'view',
+          subject: {
+            object: {
+              objectType: 'user',
+              objectId: 'user-001',
+            },
+          },
+        },
+        {
+          resource: {
+            objectType: 'task',
+            objectId: 'task-002',
+          },
+          permission: 'view',
+          subject: {
+            object: {
+              objectType: 'user',
+              objectId: 'user-001',
+            },
+          },
+        },
+      ],
+    }, (err, response) => {
+      if (err) reject(err);
+      else resolve(response);
+    });
+  });
+
+  response.pairs.map((pair) => {
+    const permissionship = pair.response.item.permissionship;
+    const objectId = pair.request.resource.objectId;
+    const subject = pair.request.subject.object.objectId;
+    switch (permissionship) {
+      case v1.CheckPermissionResponse_Permissionship.NO_PERMISSION:
+        console.log(`${subject} has no permission for ${objectId}... tell them to go away`);
+        break;
+      case v1.CheckPermissionResponse_Permissionship.HAS_PERMISSION:
+        console.log(`${subject} has permission for ${objectId}. Tell them to proceed!`);
+        break;
+      case v1.CheckPermissionResponse_Permissionship.UNSPECIFIED:
+        console.log(`I don't understand the permissionship for ${subject} and ${objectId}. What are you trying to do?`);
+        break;
+    }
+  });
+} catch (error) {
+  console.error('Oh, damn, error checking permission:', error);
+}
+```
+
+After that, you can run the script using the following command:
+
+```bash
+node src/bulk-check-permissions.js
+```
+
+If things work as expected, you should see an output like this:
+
+```text
+user-001 has permission for task-001. Tell them to proceed!
+user-001 has no permission for task-002... tell them to go away
+```
+
+This output indicates that `user-001` has permission to view `task-001` but not `task-002`.
+
+The code shouldn't be too hard to understand, but one thing worth mentioning is the `response.pairs.map` method. This method iterates over the pairs of requests and responses, allowing you to process each one individually.
+
+On the first script, where you checked for a single permission, you didn't have to care about extracting resource and subject information from the response because, well, there was only one. But when checking permissions in bulk, you need to process each pair individually to get the relevant information.
