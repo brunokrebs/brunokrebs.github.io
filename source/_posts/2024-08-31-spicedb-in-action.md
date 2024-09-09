@@ -380,3 +380,56 @@ This output indicates that `user-001` has permission to view `task-001` but not 
 The code shouldn't be too hard to understand, but one thing worth mentioning is the `response.pairs.map` method. This method iterates over the pairs of requests and responses, allowing you to process each one individually.
 
 On the first script, where you checked for a single permission, you didn't have to care about extracting resource and subject information from the response because, well, there was only one. But when checking permissions in bulk, you need to process each pair individually to get the relevant information.
+
+### Script for Writing Relationships
+
+Another important feature of SpiceDB is the ability to write relationships. This is useful when you need to create new relationships between objects. In this section, you will see how to use the relationship write feature in SpiceDB.
+
+For starters, create a new file named `write-relationship.js` inside the `src` directory and add the following code:
+
+```javascript
+import { v1 } from '@authzed/authzed-node';
+
+const client = v1.NewClient('some-random-key-here', 'localhost:50051', v1.ClientSecurity.INSECURE_LOCALHOST_ALLOWED);
+
+try {
+  const response = await new Promise((resolve, reject) => {
+    client.writeRelationships({
+      updates: [
+        {
+          operation: v1.RelationshipUpdate_Operation.CREATE,
+          relationship: {
+            resource: {
+              objectType: 'task',
+              objectId: 'task-003',
+            },
+            relation: 'owner',
+            subject: {
+              object: {
+                objectType: 'user',
+                objectId: 'user-003',
+              },
+            },
+          },
+        },
+      ],
+      optionalPreconditions: [],
+    }, (err, response) => {
+      if (err) reject(err);
+      else resolve(response);
+    });
+  });
+
+  console.log('Relationship created at:', response.writtenAt);
+} catch (error) {
+  console.error('Oh, damn, error creating relationship:', error);
+}
+```
+
+After that, you can run the script using the following command:
+
+```bash
+node src/write-relationship.js
+```
+
+If everything goes well, you should see a message indicating that the relationship was created successfully. Now, as an exercise, you can change either the check-permission.js or bulk-check-permissions.js scripts to include the new relationship and check if the permissions are set correctly.
