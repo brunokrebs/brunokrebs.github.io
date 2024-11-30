@@ -1,0 +1,12 @@
+definition user {}
+
+definition task {
+  relation owner: user
+  relation editor: user
+  relation viewer: user
+
+  permission view = viewer + editor + owner
+  permission edit = editor + owner
+  permission delete = owner
+}
+

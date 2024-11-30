@@ -44,6 +44,8 @@ The following command will start a SpiceDB instance:
 docker run --rm -p 50051:50051 authzed/spicedb:v1.35.3 serve --grpc-preshared-key "some-random-key-here"
 ```
 
+> **Note:** you can add `-d` (or `--detach`) before `-rm` to run the container in the background.
+
 This command starts SpiceDB and makes it accessible on port `50051`. The `--grpc-preshared-key` flag is used to set a simple pre-shared key for gRPC communication. For the purposes of this tutorial, a fixed key is used for simplicity. In production, this key would typically be managed more securely.
 
 ### Validating the Setup
@@ -78,7 +80,7 @@ zed version
 This command will return the version of the CLI along with the version of the SpiceDB server you are running, confirming that the setup is correct:
 
 ```text
-client: zed v0.21.0
+client: zed v0.23.0
 service: v1.35.3
 ```
 
