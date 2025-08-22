@@ -36,9 +36,12 @@ social_links:
   -
     icon: twitter
     link: https://twitter.com/brunoskrebs
-  # -
-  #   icon: mail
-  #   link: mailto:me@brunokrebs.com
+  -
+    icon: mail
+    link: mailto:krebs.bruno@gmail.com
+  -
+    icon: phone
+    link: tel:+55-51-981218-8604
 
 # Customize the overview with displaying a tagcloud on the index page.
 # Options: https://hexo.io/docs/helpers.html#tagcloud
