@@ -25,6 +25,18 @@ We offer comprehensive software development services with a focus on:
 - **US business hours compatibility** - Flexible scheduling to align with your team's needs
 - **Quality-first mindset** - Emphasis on clean code, thorough testing, and maintainable solutions
 
+## Current Customer
+
+**[Mimic](https://mimic.com)** - Ransomware protection platform providing advanced security solutions to defend against cyber threats.
+
+## Previous Customers
+
+**[Auth0](https://auth0.com)** - Industry-leading authentication and authorization platform providing secure access solutions for web, mobile, and legacy applications.
+
+**[Trilon](https://trilon.com)** - Boutique IT solutions provider serving small businesses in Eastern Pennsylvania and New Jersey with quality technological solutions and bridge management systems.
+
+**[TheoremOne](https://www.theoremone.co)** (now Monks Technology Services) - Custom software development and technology consulting firm specializing in building, rescuing, and scaling enterprise technology solutions.
+
 ## Get in Touch
 
 Ready to discuss your project? Let's connect:
