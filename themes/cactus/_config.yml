@@ -175,27 +175,12 @@ utterances:
   label: Comment
   theme: github-dark
 
-# Fill in your Google Analytics tracking ID to enable Google Analytics.
-google_analytics:
-  enabled: false
-  id: G-4LMB35W1T4
-
-# Fill in your Baidu Analytics tracking ID to enable Baidu Analytics.
-baidu_analytics:
-  enabled: false
-  id: 2e6da3c375c8a87f5b664cea6d4cb29c
-
-# Fill in your Cloudflare Analytics tracking ID to enable Cloudflare Analytics.
-cloudflare_analytics:
-  enabled: false
-  id: 0dabb6e21848405483a237e6a7b6ed04
-
-# Fill in your Umami Analytics tracking ID to enable Umami Analytics.
-umami_analytics:
-  enabled: false
-  id: e77e68be-f6e4-4br3-9365-2b76b57cd571
-  host: https://analytics.domain.com
-  script_name: umami.js
+# Fill in your PostHog Analytics details to enable PostHog Analytics.
+posthog_analytics:
+  enabled: true
+  api_key: phc_cFljvnCWfpUa8LYBGi4pgeBLtNYhnNM9MfSvreSQqzY
+  api_host: https://us.i.posthog.com
+  person_profiles: always
 
 # Fill in you Gravatar email or hash if you want to use your gravatar as the
 # logo and/or favicons of you website.
