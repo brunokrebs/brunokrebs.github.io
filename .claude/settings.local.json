@@ -5,7 +5,8 @@
       "WebFetch(domain:auth0.com)",
       "WebFetch(domain:trilon.com)",
       "WebFetch(domain:www.theoremone.co)",
-      "WebFetch(domain:posthog.com)"
+      "WebFetch(domain:posthog.com)",
+      "WebFetch(domain:brunokrebs.com)"
     ],
     "deny": [],
     "ask": []

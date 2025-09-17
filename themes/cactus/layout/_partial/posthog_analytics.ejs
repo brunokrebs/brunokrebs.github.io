@@ -4,7 +4,9 @@
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);var n=t;if("undefined"!=typeof e)return function(t){n[e]=t};}(p=t.posthog=t.posthog||[]).people=p.people||[],p.toString=function(t){var e="posthog";return"posthog"!==t&&(e+="."+t),e},p.people.toString=function(){return p.toString("people")},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" ");for(n=0;n<o.length;n++)g(p,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     posthog.init('<%= theme.posthog_analytics.api_key %>', {
       api_host: '<%= theme.posthog_analytics.api_host %>',
-      person_profiles: '<%= theme.posthog_analytics.person_profiles %>'
+      person_profiles: '<%= theme.posthog_analytics.person_profiles %>',
+      capture_pageview: true,
+      capture_pageleave: true
     });
   </script>
 <% } %>
